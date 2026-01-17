@@ -1,0 +1,59 @@
+# FastAPI & Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Database
+sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# Redis & Celery
+redis==5.0.1
+celery==5.3.6
+flower==2.0.1
+
+# Scraping
+scrapy==2.11.0
+playwright==1.41.0
+beautifulsoup4==4.12.3
+lxml==5.1.0
+selenium==4.17.2
+
+# HTTP & Requests
+httpx==0.26.0
+requests==2.31.0
+aiohttp==3.9.1
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.3
+openpyxl==3.1.2
+
+# AI & ML
+transformers==4.36.2
+torch==2.1.2
+scikit-learn==1.4.0
+
+# Image Processing
+pillow==10.2.0
+opencv-python==4.9.0.80
+
+# Notifications
+python-telegram-bot==20.7
+sendgrid==6.11.0
+
+# Utilities
+python-dotenv==1.0.0
+python-multipart==0.0.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+tenacity==8.2.3
+
+# Monitoring & Logging
+loguru==0.7.2
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3

@@ -1,0 +1,15 @@
+.next
+node_modules
+dist
+build
+*.log
+.env
+.env.local
+__pycache__
+*.pyc
+.pytest_cache
+.vscode
+.idea
+exports/
+*.csv
+*.xlsx
