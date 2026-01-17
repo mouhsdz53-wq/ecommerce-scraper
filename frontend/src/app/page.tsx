@@ -20,7 +20,15 @@ export default function HomePage() {
 
     const fetchDashboardSummary = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+            // Auto-detect Codespaces URL
+            let apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+
+            // If running in Codespaces, use the forwarded port URL
+            if (typeof window !== 'undefined' && window.location.hostname.includes('app.github.dev')) {
+                const baseUrl = window.location.origin.replace('-3000', '-8000')
+                apiUrl = baseUrl
+            }
+
             const response = await fetch(`${apiUrl}/api/analytics/dashboard/summary`)
             const data = await response.json()
             setSummary(data)
@@ -201,10 +209,10 @@ export default function HomePage() {
                                 <div>
                                     <span
                                         className={`badge ${market.market_opportunity === 'high'
-                                                ? 'badge-success'
-                                                : market.market_opportunity === 'medium'
-                                                    ? 'badge-warning'
-                                                    : 'badge-danger'
+                                            ? 'badge-success'
+                                            : market.market_opportunity === 'medium'
+                                                ? 'badge-warning'
+                                                : 'badge-danger'
                                             }`}
                                     >
                                         {market.market_opportunity}
