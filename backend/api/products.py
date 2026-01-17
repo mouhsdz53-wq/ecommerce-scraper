@@ -225,3 +225,16 @@ async def get_sources(db: Session = Depends(get_db)):
     """
     sources = db.query(Product.source).distinct().all()
     return [src[0] for src in sources if src[0]]
+
+
+@router.get("/{product_id}/price-history", response_model=List[PriceHistoryResponse])
+async def get_price_history_alias(
+    product_id: int,
+    days: int = 30,
+    db: Session = Depends(get_db)
+):
+    """
+    Alias for price history endpoint
+    """
+    return await get_price_history(product_id, days, db)
+

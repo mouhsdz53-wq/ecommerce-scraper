@@ -253,3 +253,72 @@ async def get_dashboard_summary(db: Session = Depends(get_db)):
         "top_profit_opportunities": top_profit,
         "low_saturation_markets": low_saturation
     }
+
+
+@router.get("/trending")
+async def get_trending_products(limit: int = 20, db: Session = Depends(get_db)):
+    """
+    Get trending products with their scores
+    """
+    trending = db.query(Product, Trend).join(Trend).order_by(
+        desc(Trend.score_tendance)
+    ).limit(limit).all()
+    
+    return [{
+        "id": p.id,
+        "nom": p.nom,
+        "score": float(t.score_tendance),
+        "prix": float(p.prix),
+        "source": p.source,
+        "categorie": p.categorie,
+        "image_url": p.image_url
+    } for p, t in trending]
+
+
+@router.get("/stats")
+async def get_analytics_stats(db: Session = Depends(get_db)):
+    """
+    Get analytics statistics
+    """
+    total_products = db.query(Product).count()
+    avg_price = db.query(func.avg(Product.prix)).scalar() or 0
+    total_reviews = db.query(func.sum(Product.reviews_count)).scalar() or 0
+    
+    # Group by category
+    categories = db.query(
+        Product.categorie,
+        func.count(Product.id).label('count')
+    ).group_by(Product.categorie).all()
+    
+    # Group by source
+    sources = db.query(
+        Product.source,
+        func.count(Product.id).label('count')
+    ).group_by(Product.source).all()
+    
+    return {
+        "total_products": total_products,
+        "avg_price": float(avg_price),
+        "total_reviews": int(total_reviews),
+        "categories": [{"categorie": c, "count": count} for c, count in categories],
+        "sources": [{"source": s, "count": count} for s, count in sources]
+    }
+
+
+@router.get("/product/{product_id}/trend")
+async def get_product_trend(product_id: int, db: Session = Depends(get_db)):
+    """
+    Get trend data for a specific product
+    """
+    trend = db.query(Trend).filter(Trend.product_id == product_id).first()
+    
+    if not trend:
+        return None
+    
+    return {
+        "score_tendance": float(trend.score_tendance),
+        "volume_ventes_estime": trend.volume_ventes_estime,
+        "saturation_marche": float(trend.saturation_marche),
+        "marge_beneficiaire": float(trend.marge_beneficiaire)
+    }
+
