@@ -26,7 +26,11 @@ class AliExpressScraper:
         products = []
         
         try:
-            async with httpx.AsyncClient(headers=self.headers, timeout=30.0) as client:
+            async with httpx.AsyncClient(
+                headers=self.headers, 
+                timeout=30.0,
+                follow_redirects=True
+            ) as client:
                 # URL de recherche pour produits tendances
                 url = f"{self.base_url}/wholesale?SearchText={category}&SortType=total_tranpro_desc"
                 
@@ -147,7 +151,11 @@ class AliExpressScraper:
             return cached_data
         
         try:
-            async with httpx.AsyncClient(headers=self.headers, timeout=30.0) as client:
+            async with httpx.AsyncClient(
+                headers=self.headers, 
+                timeout=30.0,
+                follow_redirects=True
+            ) as client:
                 url = f"{self.base_url}/item/{product_id}.html"
                 
                 logger.info(f"Scraping AliExpress product details: {url}")

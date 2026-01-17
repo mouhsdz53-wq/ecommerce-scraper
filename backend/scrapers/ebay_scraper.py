@@ -25,7 +25,11 @@ class EbayScraper:
         products = []
         
         try:
-            async with httpx.AsyncClient(headers=self.headers, timeout=30.0) as client:
+            async with httpx.AsyncClient(
+                headers=self.headers, 
+                timeout=30.0,
+                follow_redirects=True
+            ) as client:
                 # URL pour articles vendus
                 url = f"{self.base_url}/sch/i.html?_nkw={keyword}&LH_Sold=1&LH_Complete=1&_sop=13"
                 

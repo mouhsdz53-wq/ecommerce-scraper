@@ -31,7 +31,11 @@ class ShopifyScraper:
             if not store_url.endswith('/'):
                 store_url += '/'
             
-            async with httpx.AsyncClient(headers=self.headers, timeout=30.0) as client:
+            async with httpx.AsyncClient(
+                headers=self.headers, 
+                timeout=30.0,
+                follow_redirects=True
+            ) as client:
                 url = f"{store_url}products.json?limit={limit}"
                 
                 logger.info(f"Scraping Shopify store: {url}")
