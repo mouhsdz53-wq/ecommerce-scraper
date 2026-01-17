@@ -6,7 +6,7 @@ import os
 sys.path.append('/app')
 
 from sqlalchemy.orm import Session
-from models import SessionLocal, Product, PriceHistory, TrendingScore
+from models import SessionLocal, Product, PriceHistory, Trend
 from datetime import datetime, timedelta
 import random
 
@@ -39,22 +39,20 @@ def create_test_data():
         
         for i, prod_data in enumerate(products_data):
             # Random prices
-            prix_amazon = round(random.uniform(15, 150), 2)
-            prix_aliexpress = round(prix_amazon * random.uniform(0.3, 0.7), 2)
-            prix_ebay = round(prix_amazon * random.uniform(0.8, 1.2), 2)
+            prix = round(random.uniform(15, 150), 2)
             
             product = Product(
                 nom=prod_data["nom"],
                 description=f"High quality {prod_data['nom'].lower()} with premium features",
-                prix=prix_amazon,
+                prix=prix,
                 url=f"https://example.com/product/{i+1}",
                 image_url=f"https://via.placeholder.com/300x300?text={prod_data['nom'].replace(' ', '+')}",
                 source=prod_data["source"],
                 categorie=prod_data["categorie"],
-                note_moyenne=round(random.uniform(3.5, 5.0), 1),
-                nombre_avis=random.randint(50, 5000),
-                stock_disponible=random.randint(10, 500),
-                date_scraping=datetime.now()
+                rating=round(random.uniform(3.5, 5.0), 1),
+                reviews_count=random.randint(50, 5000),
+                stock_status="In Stock" if random.random() > 0.2 else "Low Stock",
+                asin=f"B0{random.randint(10000, 99999)}XYZ"
             )
             
             db.add(product)
@@ -65,24 +63,25 @@ def create_test_data():
                 price_variation = random.uniform(0.9, 1.1)
                 price_history = PriceHistory(
                     product_id=product.id,
-                    prix=round(prix_amazon * price_variation, 2),
-                    date_enregistrement=datetime.now() - timedelta(days=days_ago)
+                    prix=round(prix * price_variation, 2),
+                    source=prod_data["source"],
+                    date=datetime.now() - timedelta(days=days_ago)
                 )
                 db.add(price_history)
             
-            # Add trending score
-            trending_score = TrendingScore(
+            # Add trend data
+            trend = Trend(
                 product_id=product.id,
-                score=round(random.uniform(60, 95), 1),
-                vues_recentes=random.randint(1000, 50000),
-                taux_conversion=round(random.uniform(2, 15), 2),
-                vitesse_vente=round(random.uniform(5, 50), 1),
+                score_tendance=round(random.uniform(60, 95), 1),
+                volume_ventes_estime=random.randint(100, 5000),
+                saturation_marche=round(random.uniform(20, 80), 2),
+                marge_beneficiaire=round(prix * random.uniform(0.2, 0.5), 2),
                 date_calcul=datetime.now()
             )
-            db.add(trending_score)
+            db.add(trend)
             
             created_products.append(product)
-            print(f"✅ Created: {product.nom} (${prix_amazon})")
+            print(f"✅ Created: {product.nom} (${prix})")
         
         db.commit()
         
@@ -91,9 +90,12 @@ def create_test_data():
         
     except Exception as e:
         print(f"❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
         db.rollback()
     finally:
         db.close()
 
 if __name__ == "__main__":
     create_test_data()
+
