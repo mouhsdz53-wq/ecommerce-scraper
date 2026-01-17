@@ -1,8 +1,12 @@
 {
     "name": "E-Commerce Scraper Platform",
-    "dockerComposeFile": "docker-compose.yml",
-    "service": "backend",
-    "workspaceFolder": "/workspace",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "18"
+        }
+    },
     "forwardPorts": [
         3000,
         8000,
@@ -27,7 +31,7 @@
             "onAutoForward": "silent"
         }
     },
-    "postCreateCommand": "echo 'Codespace ready! Run: docker-compose up -d'",
+    "postCreateCommand": "cp backend/.env.example backend/.env 2>/dev/null || true && echo '✅ Codespace ready! Run: docker-compose up -d'",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -41,7 +45,7 @@
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "editor.formatOnSave": true,
                 "editor.codeActionsOnSave": {
-                    "source.organizeImports": true
+                    "source.organizeImports": "explicit"
                 }
             }
         }
